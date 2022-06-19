@@ -6,7 +6,6 @@ let commentCount = 0;
 
 //Функция создания комментария к фотографии
 const createPhotoComment = () => {
-  // eslint-disable-next-line no-import-assign
   commentCount++;
   return {
     id: commentCount,
@@ -21,7 +20,6 @@ let photoCount = 0;
 
 //Функция создания описания фотографии
 const createPhoto = () => {
-  // eslint-disable-next-line no-import-assign
   photoCount++;
   return {
     id : photoCount,
