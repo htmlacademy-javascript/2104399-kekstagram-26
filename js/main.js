@@ -1,3 +1,4 @@
-import './functions-for-create.js';
-import './utils.js';
-import './data-create.js';
+import {renderingThumbnails} from './render-template.js';
+import {arrayPhotoObject} from './data.js';
+
+renderingThumbnails(arrayPhotoObject);

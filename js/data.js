@@ -1,3 +1,5 @@
+import {getRandomArrayElement, getRandomPositiveInteger} from './utils.js';
+
 //Тексты комментариев
 const AUTHOR_MESSAGES = [
   'Всё отлично!',
@@ -23,13 +25,13 @@ const COMMENT_AUTHOR_NAME = [
 ];
 
 //Номер фото для аватара
-const NUMBER_AVATAR = {
+const NumberAvatar = {
   MIN: 1,
   MAX: 6,
 };
 
 //Количество комментариев
-const NUMBER_COMMENT = {
+const NumberComment = {
   MIN: 1,
   MAX: 10,
 };
@@ -37,4 +39,40 @@ const NUMBER_COMMENT = {
 // Необходимое количество фотографий
 const REQUIRED_PHOTO_COUNT = 25;
 
-export {AUTHOR_MESSAGES, COMMENT_AUTHOR_NAME, NUMBER_AVATAR, NUMBER_COMMENT, REQUIRED_PHOTO_COUNT};
+//Счетчик комментариев
+let commentCount = 0;
+
+//Функция создания комментария к фотографии
+const createPhotoComment = () => {
+  commentCount++;
+  return {
+    id: commentCount,
+    avatar: `img/avatar-${getRandomPositiveInteger(NumberAvatar.MIN, NumberAvatar.MAX)}.svg`,
+    message: getRandomArrayElement(AUTHOR_MESSAGES),
+    name: getRandomArrayElement(COMMENT_AUTHOR_NAME),
+  };
+};
+
+// Счетчик фотографий
+let photoCount = 0;
+
+//Функция создания описания фотографии
+const createPhoto = () => {
+  photoCount++;
+  return {
+    id : photoCount,
+    url : `photos/${photoCount}.jpg`,
+    description : `Фото номер ${photoCount}`,
+    likes : getRandomPositiveInteger(15, 200),
+    comments : Array.from({length: getRandomPositiveInteger(NumberComment.MIN, NumberComment.MAX)}, createPhotoComment),
+  };
+};
+
+//Массив фотографий
+const arrayPhotoObject = Array.from({length: REQUIRED_PHOTO_COUNT}, createPhoto);
+
+// console.log(arrayPhotoObject);
+
+export {createPhotoComment, createPhoto, arrayPhotoObject, commentCount, photoCount};
+
+
