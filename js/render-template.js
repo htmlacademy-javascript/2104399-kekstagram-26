@@ -1,16 +1,16 @@
 import {showBigPhoto} from './show-photo.js';
 
 const renderingThumbnails = (arrayPhotoObject) => {
-  // Находим контейнер для изображений, куда будем помещать фото
+  // Находим контейнер для изображений, куда будем помещать фото.
   const similarPhotoElement = document.querySelector('.pictures');
 
-  // Находим шаблон изображения, который будем копировать
+  // Находим шаблон изображения, который будем копировать.
   const templateElement = document.querySelector('#picture').content;
 
-  // Создаем фрагмент
+  // Создаем фрагмент.
   const similarPhotoFragment = document.createDocumentFragment();
 
-  // Цикл по массиву
+  // Цикл по массиву.
   arrayPhotoObject.forEach((photo) => {
     const photoElement = templateElement.cloneNode(true);
     photoElement.querySelector('.picture__img').src = photo.url;
