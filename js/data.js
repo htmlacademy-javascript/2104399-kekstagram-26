@@ -1,6 +1,6 @@
 import {getRandomArrayElement, getRandomPositiveInteger} from './utils.js';
 
-//Тексты комментариев
+// Тексты комментариев.
 const AUTHOR_MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -10,7 +10,7 @@ const AUTHOR_MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-//Имена авторов комментариев
+// Имена авторов комментариев.
 const COMMENT_AUTHOR_NAME = [
   'Коржик',
   'Карамелька',
@@ -24,25 +24,25 @@ const COMMENT_AUTHOR_NAME = [
   'Пончик'
 ];
 
-//Номер фото для аватара
+// Номер фото для аватара.
 const NumberAvatar = {
   MIN: 1,
   MAX: 6,
 };
 
-//Количество комментариев
+// Количество комментариев.
 const NumberComment = {
   MIN: 1,
   MAX: 10,
 };
 
-// Необходимое количество фотографий
+// Необходимое количество фотографий.
 const REQUIRED_PHOTO_COUNT = 25;
 
-//Счетчик комментариев
+// Счетчик комментариев.
 let commentCount = 0;
 
-//Функция создания комментария к фотографии
+// Функция создания комментария к фотографии.
 const createPhotoComment = () => {
   commentCount++;
   return {
@@ -53,10 +53,10 @@ const createPhotoComment = () => {
   };
 };
 
-// Счетчик фотографий
+// Счетчик фотографий.
 let photoCount = 0;
 
-//Функция создания описания фотографии
+// Функция создания описания фотографии.
 const createPhoto = () => {
   photoCount++;
   return {
@@ -68,11 +68,7 @@ const createPhoto = () => {
   };
 };
 
-//Массив фотографий
+// Массив фотографий.
 const arrayPhotoObject = Array.from({length: REQUIRED_PHOTO_COUNT}, createPhoto);
 
-// console.log(arrayPhotoObject);
-
 export {createPhotoComment, createPhoto, arrayPhotoObject, commentCount, photoCount};
-
-

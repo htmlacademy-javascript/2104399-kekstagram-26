@@ -34,6 +34,7 @@ const imgUploadForm = document.querySelector('.img-upload__form');
 uploadFile.addEventListener('change', () => {
   imgUploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
+  document.addEventListener('keydown', onModalEscKeyDown);
 });
 
 // Закрытие формы редактирования изображения.
@@ -105,9 +106,9 @@ pristine.addValidator(textHashtags, validateHashtags, MessagesFormValidationErro
 pristine.addValidator(textHashtags, validateUniqueHashtags, MessagesFormValidationErros.NOT_UNIQUE_HASHTAGS);
 pristine.addValidator(textHashtags, validateCountHashtags, MessagesFormValidationErros.INVALID_COUNT_HASHTAGS);
 
-imgUploadForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-});
+// imgUploadForm.addEventListener('submit', (evt) => {
+//   evt.preventDefault();
+//   pristine.validate();
+// });
 
 export {showEditForm};
