@@ -121,11 +121,8 @@ const showBigPhoto = (photo) => {
     countClickAddComments++;
     if (countClickAddComments === commentsPartsCount - 1) {
       commentLoader.classList.add('hidden');
-      addCommentsToList();
     }
-    else {
-      addCommentsToList();
-    }
+    addCommentsToList();
   });
 
   // Добавлем описание фото.

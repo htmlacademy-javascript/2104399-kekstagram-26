@@ -106,9 +106,11 @@ pristine.addValidator(textHashtags, validateHashtags, MessagesFormValidationErro
 pristine.addValidator(textHashtags, validateUniqueHashtags, MessagesFormValidationErros.NOT_UNIQUE_HASHTAGS);
 pristine.addValidator(textHashtags, validateCountHashtags, MessagesFormValidationErros.INVALID_COUNT_HASHTAGS);
 
-// imgUploadForm.addEventListener('submit', (evt) => {
-//   evt.preventDefault();
-//   pristine.validate();
-// });
+imgUploadForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  if (pristine.validate()) {
+    imgUploadForm.submit();
+  }
+});
 
-export {showEditForm};
+export {showEditForm, uploadFile};
