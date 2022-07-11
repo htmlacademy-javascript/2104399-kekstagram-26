@@ -1,4 +1,6 @@
 import {body} from './show-photo.js';
+import {sendData} from './api.js';
+import {showSuccessMessage} from './success-message.js';
 
 // Максимальное количество хэш-тегов.
 const MAX_LENGTH_HASHTAGS = 5;
@@ -29,6 +31,9 @@ const textDescription = imgUploadOverlay.querySelector('.text__description');
 
 // Отправка формы.
 const imgUploadForm = document.querySelector('.img-upload__form');
+
+// Кнопка отправки формы.
+const submitButton = imgUploadForm.querySelector('.img-upload__submit');
 
 // Листенер на изменение контрола загрузки файла.
 uploadFile.addEventListener('change', () => {
@@ -80,13 +85,13 @@ textDescription.addEventListener('keydown', onFocusInputEscKeyDown);
 const validateHashtags = (value) => {
   const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
   const hashTags = value.toLowerCase().trim().split(' ');
-  return hashTags.every((hashTag) => re.test(hashTag));
+  return value === '' || hashTags.every((hashTag) => re.test(hashTag));
 };
 
 // Функция уникальности хэш-тэгов.
 const validateUniqueHashtags = (value) => {
   const hashTags = value.toLowerCase().trim().split(' ');
-  return hashTags.length === 0 || hashTags.length === (new Set(hashTags)).size;
+  return hashTags.length === (new Set(hashTags)).size;
 };
 
 // Функция проверки количества хэш-тегов.
@@ -106,11 +111,37 @@ pristine.addValidator(textHashtags, validateHashtags, MessagesFormValidationErro
 pristine.addValidator(textHashtags, validateUniqueHashtags, MessagesFormValidationErros.NOT_UNIQUE_HASHTAGS);
 pristine.addValidator(textHashtags, validateCountHashtags, MessagesFormValidationErros.INVALID_COUNT_HASHTAGS);
 
-imgUploadForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  if (pristine.validate()) {
-    imgUploadForm.submit();
-  }
-});
+// Функция блокировки кнопки отправки формы.
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправляю...';
+};
 
-export {showEditForm, uploadFile};
+// Функция снятия блокировки кнопки риправки формы.
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const setUserFormSubmit = (onSuccess, onFail) => {
+  imgUploadForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+        },
+        () => {
+          onFail();
+          unblockSubmitButton();
+        },
+        new FormData(imgUploadForm)
+      );
+    }
+  });
+};
+
+export {showEditForm, uploadFile, setUserFormSubmit, closeEditForm, imgUploadOverlay};
