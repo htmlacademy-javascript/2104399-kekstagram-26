@@ -16,23 +16,22 @@ const getData = (onSuccess) => {
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(
-    API_URL,
+    `${API_URL}`,
     {
       method: 'POST',
       body,
-    })
+    },
+  )
     .then((response) => {
       if (response.ok) {
         onSuccess();
       } else {
-        onFail('Не удалось отправить фото. Попробуйте ещё раз.');
+        onFail();
       }
     })
     .catch(() => {
-      onFail('Не удалось отправить фото. Попробуйте ещё раз.');
+      onFail();
     });
 };
 
 export {getData, sendData};
-
-

@@ -1,6 +1,7 @@
 import {body} from './show-photo.js';
 import {sendData} from './api.js';
 import {showSuccessMessage} from './success-message.js';
+import {showErrorMessage} from './error-message.js';
 
 // Максимальное количество хэш-тегов.
 const MAX_LENGTH_HASHTAGS = 5;
@@ -123,23 +124,28 @@ const unblockSubmitButton = () => {
   submitButton.textContent = 'Опубликовать';
 };
 
-const setUserFormSubmit = (onSuccess, onFail) => {
+// Функция успешной отправки фото.
+const onSuccessSendForm = () => {
+  unblockSubmitButton();
+  closeEditForm();
+  showSuccessMessage();
+};
+
+// Функция неуспешной отправки фото.
+const onFailSendForm = () => {
+  unblockSubmitButton();
+  imgUploadOverlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+  showErrorMessage();
+};
+
+const setUserFormSubmit = () => {
   imgUploadForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
     if (isValid) {
       blockSubmitButton();
-      sendData(
-        () => {
-          onSuccess();
-          unblockSubmitButton();
-        },
-        () => {
-          onFail();
-          unblockSubmitButton();
-        },
-        new FormData(imgUploadForm)
-      );
+      sendData(onSuccessSendForm, onFailSendForm, new FormData(evt.target));
     }
   });
 };
