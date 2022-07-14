@@ -8,27 +8,40 @@ const showSuccessMessage = () => {
   // Клонируем шаблон сообщения об успешной отправке.
   const successPopup = successTemplate.cloneNode(true);
 
+  // Функия закрытия окна сообщения.
+  const closeMessageModal = () => {
+    successPopup.remove();
+    document.removeEventListener('keydown', onMessageEscapeKeydown);
+  };
+
   // Добавляем в конец body.
   body.append(successPopup);
 
   // Листенеры.
-  // Кнопка успешной отправки формы.
-  const successButton = successPopup.querySelector('.success__button');
-  successButton.addEventListener('click', () => {
-    successPopup.remove();
-  });
-
-  // По Escape.
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      successPopup.remove();
+  // Обработчик для клика вне окна сообщения.
+  successPopup.addEventListener('click', (evt) => {
+    if(evt.target.classList.contains('success')) {
+      closeMessageModal();
     }
   });
 
-  // По клику.
-  document.addEventListener('click', () => {
-    successPopup.remove();
+  // Кнопка успешной отправки формы.
+  const successButton = successPopup.querySelector('.success__button');
+  successButton.addEventListener('click', () => {
+    closeMessageModal();
   });
+
+  function onMessageEscapeKeydown (evt) {
+    if (evt.key === 'Escape') {
+      closeMessageModal();
+    }
+  }
+
+  // По Escape.
+  document.addEventListener('keydown', onMessageEscapeKeydown);
+
+  // По клику.
+  document.addEventListener('click', closeMessageModal);
 };
 
 export {showSuccessMessage};

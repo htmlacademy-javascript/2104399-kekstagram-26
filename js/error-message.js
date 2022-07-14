@@ -10,6 +10,12 @@ const hideEditForm = () => {
   body.classList.add('modal-open');
 };
 
+// Функция открытия окна редактирования изображения.
+const unHideEditForm = () => {
+  imgUploadOverlay.classList.remove('hidden');
+  body.classList.add('modal-open');
+};
+
 // Показ сообщения об ошибке загрузки.
 const showErrorMessage = () => {
   // Шаблон сообщения об ошибке загрузки файла.
@@ -18,10 +24,24 @@ const showErrorMessage = () => {
   // Клонируем шаблон сообщения об ошибке загрузки.
   const errorPopup = errorTemplate.cloneNode(true);
 
+  // Функия закрытия окна сообщения.
+  const closeMessageModal = () => {
+    errorPopup.remove();
+    document.removeEventListener('keydown', onMessageEscapeKeydown);
+  };
+
   // Добавляем в конец body.
   body.append(errorPopup);
 
   // Листенеры.
+  // Обработчик для клика вне окна сообщения.
+  errorPopup.addEventListener('click', (evt) => {
+    if(evt.target.classList.contains('error')) {
+      closeMessageModal();
+      unHideEditForm();
+    }
+  });
+
   // Кнопка ошибки загрузки.
   const errorButton = errorPopup.querySelector('.error__button');
   errorButton.addEventListener('click', () => {
@@ -29,19 +49,17 @@ const showErrorMessage = () => {
     hideEditForm();
   });
 
-  // По Escape.
-  document.addEventListener('keydown', (evt) => {
+  function onMessageEscapeKeydown (evt) {
     if (evt.key === 'Escape') {
-      errorPopup.remove();
       hideEditForm();
     }
-  });
+  }
+
+  // По Escape.
+  document.addEventListener('keydown', onMessageEscapeKeydown);
 
   // По клику.
-  document.addEventListener('click', () => {
-    errorPopup.remove();
-    hideEditForm();
-  });
+  document.addEventListener('click', closeMessageModal);
 };
 
 // Функция показа сообщения об ошибке загрузки данных с сервера.
