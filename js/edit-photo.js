@@ -12,6 +12,115 @@ const STEP_SCALE_VALUE = 25;
 // Значение масштаба по умолчанию для окна.
 const SCALE_DEFAULT = 100;
 
+// Настройки слайдера.
+const settings = {
+  chrome: {
+    effect: 'chrome',
+    sliderSettings: {
+      range: {
+        min: 0,
+        max: 1,
+      },
+      start: 1,
+      step: 0.1,
+      connect: 'lower',
+      format: {
+        to: (value) => {
+          if (Number.isInteger(value)) {
+            return value.toFixed(0);
+          }
+          return value.toFixed(1);
+        },
+        from: (value) => parseFloat(value),
+      },
+    },
+    filterName: 'grayscale',
+    measuringUnit: '',
+  },
+  sepia : {
+    effect: 'sepia',
+    sliderSettings: {
+      range: {
+        min: 0,
+        max: 1,
+      },
+      start: 1,
+      step: 0.1,
+      connect: 'lower',
+      format: {
+        to: (value) => {
+          if (Number.isInteger(value)) {
+            return value.toFixed(0);
+          }
+          return value.toFixed(1);
+        },
+        from: (value) => parseFloat(value),
+      },
+    },
+    filterName: 'sepia',
+    measuringUnit: '',
+  },
+  marvin: {
+    effect: 'marvin',
+    sliderSettings: {
+      range: {
+        min: 0,
+        max: 100,
+      },
+      start: 100,
+      step: 1,
+      connect: 'lower',
+      format: {
+        to: (value) => `${value}`,
+        from: (value) => Number(value.replace('%', '')),
+      },
+    },
+    filterName: 'invert',
+    measuringUnit: '%',
+  },
+  phobos: {
+    effect: 'phobos',
+    sliderSettings: {
+      range: {
+        min: 0,
+        max: 3,
+      },
+      start: 3,
+      step: 0.1,
+      connect: 'lower',
+      format: {
+        to: (value) => `${value}`,
+        from: (value) => Number(value.replace('px', '')),
+      },
+    },
+    filterName: 'blur',
+    measuringUnit: 'px',
+  },
+  heat: {
+    effect: 'heat',
+    sliderSettings: {
+      range: {
+        min: 1,
+        max: 3,
+      },
+      start: 3,
+      step: 0.1,
+      connect: 'lower',
+      format: {
+        to: (value) => {
+          if (Number.isInteger(value)) {
+            return value.toFixed(0);
+          }
+          return value.toFixed(1);
+        },
+        from: (value) => parseFloat(value),
+      },
+    },
+    filterName: 'brightness',
+    measuringUnit: '',
+  },
+};
+
 // Кнопка уменьшения масштаба.
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
 
@@ -22,10 +131,10 @@ const scaleControlBigger = document.querySelector('.scale__control--bigger');
 const scaleControlValue = document.querySelector('.scale__control--value');
 
 // Превью фото.
-const imgUploadPreview = document.querySelector('.img-upload__preview');
+const imgUploadPreview = document.querySelector('.img-upload__preview img');
 
-// Находим все кнопки эффектов.
-const effectsRadioButtons = document.querySelectorAll('.effects__radio');
+// Список кнопок эффектов для делегирования.
+const effectsList = document.querySelector('.effects__list');
 
 // Поле для записи уровня эффекта.
 const effectLevelValue = document.querySelector('.effect-level__value');
@@ -41,6 +150,8 @@ sliderEffect.classList.add('hidden');
 
 // Удаление эффектов.
 const applyClearEffects = () => {
+  sliderEffect.classList.add('hidden');
+  effectLevelValue.value = '';
   imgUploadPreview.className = 'img-upload__preview'; // Нужно для того, чтобы фото на запоминало эффект предыдущей загрузки.
   if (effectLevelSlider.noUiSlider) {
     effectLevelSlider.noUiSlider.destroy();
@@ -58,7 +169,7 @@ uploadFile.addEventListener('click', () => {
 // Функция уменьшения масштаба.
 const smallerScalePreview = () => {
   // Значение масштаба для расчета.
-  let scaleForCalculate = Number(scaleControlValue.value.slice(0, -1));
+  let scaleForCalculate = parseInt(scaleControlValue.value, 10);
   if (scaleForCalculate > MIN_SCALE_VALUE) {
     scaleControlValue.value = `${scaleForCalculate - STEP_SCALE_VALUE}%`;
     scaleForCalculate -= STEP_SCALE_VALUE;
@@ -73,7 +184,7 @@ scaleControlSmaller.addEventListener('click', smallerScalePreview);
 // Функция увеличения масштаба.
 const biggerScalePreview = () => {
   // Значение масштаба для расчета.
-  let scaleForCalculate = Number(scaleControlValue.value.slice(0, -1));
+  let scaleForCalculate = parseInt(scaleControlValue.value, 10);
   if (scaleForCalculate < MAX_SCALE_VALUE) {
     scaleControlValue.value = `${scaleForCalculate + STEP_SCALE_VALUE}%`;
     scaleForCalculate += STEP_SCALE_VALUE;
@@ -90,185 +201,27 @@ scaleControlBigger.addEventListener('click', biggerScalePreview);
 const applyEffectNone = () => {
   applyClearEffects();
   imgUploadPreview.classList.add('effects__preview--none');
-  sliderEffect.classList.toggle('hidden');
+  sliderEffect.classList.add('hidden');
 };
 
-// Эффект "Хром".
-const applyEffectChrome = () => {
+// Функция применения эффектов.
+const applyEffect = ({effect, sliderSettings, filterName, measuringUnit}) => {
   applyClearEffects();
-  imgUploadPreview.classList.add('effects__preview--chrome');
+  imgUploadPreview.classList.add(`effects__preview--${effect}`);
   sliderEffect.classList.remove('hidden');
-  noUiSlider.create(effectLevelSlider, {
-    range: {
-      min: 0,
-      max: 1,
-    },
-    start: 1,
-    step: 0.1,
-    connect: 'lower',
-    format: {
-      to: function (value) {
-        if (Number.isInteger(value)) {
-          return value.toFixed(0);
-        }
-        return value.toFixed(1);
-      },
-      from: function (value) {
-        return parseFloat(value);
-      },
-    },
-  });
+  noUiSlider.create(effectLevelSlider, sliderSettings);
   effectLevelSlider.noUiSlider.on('update', () => {
     effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-    imgUploadPreview.style.filter = `grayscale(${effectLevelValue.value})`;
+    imgUploadPreview.style.filter = `${filterName}(${effectLevelValue.value}${measuringUnit})`;
   });
 };
 
-// Эффект Сепия.
-const applyEffectSepia = () => {
-  applyClearEffects();
-  imgUploadPreview.classList.add('effects__preview--sepia');
-  sliderEffect.classList.remove('hidden');
-  noUiSlider.create(effectLevelSlider, {
-    range: {
-      min: 0,
-      max: 1,
-    },
-    start: 1,
-    step: 0.1,
-    connect: 'lower',
-    format: {
-      to: function (value) {
-        if (Number.isInteger(value)) {
-          return value.toFixed(0);
-        }
-        return value.toFixed(1);
-      },
-      from: function (value) {
-        return parseFloat(value);
-      },
-    },
-  });
-  effectLevelSlider.noUiSlider.on('update', () => {
-    effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-    imgUploadPreview.style.filter = `sepia(${effectLevelValue.value})`;
-  });
-};
-
-// Эффект Марвин.
-const applyEffectMarvin = () => {
-  applyClearEffects();
-  imgUploadPreview.classList.add('effects__preview--marvin');
-  sliderEffect.classList.remove('hidden');
-  noUiSlider.create(effectLevelSlider, {
-    range: {
-      min: 0,
-      max: 100,
-    },
-    start: 100,
-    step: 1,
-    connect: 'lower',
-    format: {
-      to: function (value) {
-        return `${value}%`;
-      },
-      from: function (value) {
-        return parseInt(value.replace('%', ''), 10);
-      },
-    },
-  });
-  effectLevelSlider.noUiSlider.on('update', () => {
-    effectLevelValue.value = effectLevelSlider.noUiSlider.get().replace('%', '');
-    imgUploadPreview.style.filter = `invert(${effectLevelValue.value}%)`;
-  });
-};
-
-// Эффект Фобос.
-const applyEffectPhobos = () => {
-  applyClearEffects();
-  imgUploadPreview.classList.add('effects__preview--phobos');
-  sliderEffect.classList.remove('hidden');
-  noUiSlider.create(effectLevelSlider, {
-    range: {
-      min: 0,
-      max: 3,
-    },
-    start: 3,
-    step: 0.1,
-    connect: 'lower',
-    format: {
-      to: function (value) {
-        return `${value}px`;
-      },
-      from: function (value) {
-        return parseInt(value.replace('px', ''), 10);
-      },
-    },
-  });
-  effectLevelSlider.noUiSlider.on('update', () => {
-    effectLevelValue.value = effectLevelSlider.noUiSlider.get().replace('px', '');
-    imgUploadPreview.style.filter = `blur(${effectLevelValue.value}px)`;
-  });
-};
-
-// Эффект Зной.
-const applyEffectHeat = () => {
-  applyClearEffects();
-  imgUploadPreview.classList.add('effects__preview--heat');
-  sliderEffect.classList.remove('hidden');
-  noUiSlider.create(effectLevelSlider, {
-    range: {
-      min: 1,
-      max: 3,
-    },
-    start: 3,
-    step: 0.1,
-    connect: 'lower',
-    format: {
-      to: function (value) {
-        if (Number.isInteger(value)) {
-          return value.toFixed(0);
-        }
-        return value.toFixed(1);
-      },
-      from: function (value) {
-        return parseFloat(value);
-      },
-    },
-  });
-  effectLevelSlider.noUiSlider.on('update', () => {
-    effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-    imgUploadPreview.style.filter = `brightness(${effectLevelValue.value})`;
-  });
-};
-
-// Цикл по кнопкам эффектов.
-effectsRadioButtons.forEach((effectsRadioButton) => {
-  effectsRadioButton.addEventListener('change', () => {
-    if (effectsRadioButton.checked) {
-      const effectId = effectsRadioButton.id;
-      switch (effectId) {
-        case 'effect-none':
-          applyEffectNone();
-          break;
-        case 'effect-chrome':
-          applyEffectChrome();
-          break;
-        case 'effect-sepia':
-          applyEffectSepia();
-          break;
-        case 'effect-marvin':
-          applyEffectMarvin();
-          break;
-        case 'effect-phobos':
-          applyEffectPhobos();
-          break;
-        case 'effect-heat':
-          applyEffectHeat();
-          break;
-      }
-    }
-  });
+// Делегирование.
+effectsList.addEventListener('change', (evt) => {
+  if (evt.target.value === 'none') {
+    applyEffectNone();
+  }
+  else {
+    applyEffect(settings[evt.target.value]);
+  }
 });
-
-
