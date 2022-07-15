@@ -16,4 +16,12 @@ checkStringLength('Строка', 5);
 // Функция для получения случайного элемента из массива.
 const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
-export {getRandomArrayElement, getRandomPositiveInteger};
+function debounce (callback, timeoutDelay = 500) {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+export {getRandomArrayElement, getRandomPositiveInteger, debounce};
