@@ -14,15 +14,6 @@ const imgFilters = document.querySelector('.img-filters');
 // Все кнопки фильтров.
 const allFiltersButtons = imgFilters.querySelectorAll('button');
 
-// Кнопка "По умолчанию".
-// const filterDefaultButton = imgFiltersForm.querySelector('#filter-default');
-
-// Кнопка "Случайные".
-// const filterRandomButton = imgFiltersForm.querySelector('#filter-random');
-
-// Кнопка "Обсуждаемые".
-// const filterDiscussedButton = imgFiltersForm.querySelector('#filter-discussed');
-
 // Функция удаления фото со страницы.
 const removePhotoFromPage = () => {
   const photos = document.querySelectorAll('.picture');
