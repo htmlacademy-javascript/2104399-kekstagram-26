@@ -11,9 +11,6 @@ const RERENDER_DELAY = 500;
 // Блок кнопопок фильтрации фото.
 const imgFilters = document.querySelector('.img-filters');
 
-// Форма кнопопок фильтрации фото.
-// const imgFiltersForm = document.querySelector('.img-filters__form');
-
 // Все кнопки фильтров.
 const allFiltersButtons = imgFilters.querySelectorAll('button');
 
