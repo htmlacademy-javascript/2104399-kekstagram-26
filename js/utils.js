@@ -6,16 +6,6 @@ const getRandomPositiveInteger = (a, b) => {
   return Math.floor(result);
 };
 
-getRandomPositiveInteger(1, 100);
-
-// Функция для проверки максимальной длины строки.
-const checkStringLength = (string, length) => string.length <= length;
-
-checkStringLength('Строка', 5);
-
-// Функция для получения случайного элемента из массива.
-const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
-
 function debounce (callback, timeoutDelay = 500) {
   let timeoutId;
   return (...rest) => {
@@ -24,4 +14,4 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-export {getRandomArrayElement, getRandomPositiveInteger, debounce};
+export {getRandomPositiveInteger, debounce};

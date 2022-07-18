@@ -40,8 +40,6 @@ const showSuccessMessage = () => {
   // По Escape.
   document.addEventListener('keydown', onMessageEscapeKeydown);
 
-  // По клику.
-  document.addEventListener('click', closeMessageModal);
 };
 
 export {showSuccessMessage};
