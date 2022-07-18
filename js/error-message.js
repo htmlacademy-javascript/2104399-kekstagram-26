@@ -57,9 +57,6 @@ const showErrorMessage = () => {
 
   // По Escape.
   document.addEventListener('keydown', onMessageEscapeKeydown);
-
-  // По клику.
-  document.addEventListener('click', closeMessageModal);
 };
 
 // Функция показа сообщения об ошибке загрузки данных с сервера.

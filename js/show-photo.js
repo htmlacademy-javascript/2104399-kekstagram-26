@@ -58,10 +58,10 @@ function onBigPhotoClose (evt) {
 
 // Функия показа большого фото.
 const showBigPhoto = (photo) => {
-  // Счетчик кликов по кнопке "Загрузить еще"
+  // Счетчик кликов по кнопке "Загрузить еще".
   let countClickAddComments = 0;
 
-  //Удаление класса по ТЗ
+  // Удаление класса по ТЗ.
   bigPhoto.classList.remove('hidden');
 
   // Добавялем ссылку на большое фото.
@@ -83,7 +83,7 @@ const showBigPhoto = (photo) => {
   // Количество партий комментариев.
   const commentsPartsCount = Math.floor(commentsCount / MAX_COUNT_DISPLAY_COMMENTS) + Math.ceil(commentsCount % MAX_COUNT_DISPLAY_COMMENTS / MAX_COUNT_DISPLAY_COMMENTS);
 
-  // Убираем кнопку добавления, если комментариев мало или добавляем ее
+  // Убираем кнопку добавления, если комментариев мало или добавляем ее.
   if (MAX_COUNT_DISPLAY_COMMENTS >= commentsCount) {
     commentLoader.classList.add('hidden');
   }
@@ -91,7 +91,7 @@ const showBigPhoto = (photo) => {
     commentLoader.classList.remove('hidden');
   }
 
-  // Функция добавления комментариев
+  // Функция добавления комментариев.
   const addCommentsToList = () => {
     // Цикл по комментариям.
     photo.comments.slice(countClickAddComments * MAX_COUNT_DISPLAY_COMMENTS, (countClickAddComments + 1) * MAX_COUNT_DISPLAY_COMMENTS).forEach((comment) => {
