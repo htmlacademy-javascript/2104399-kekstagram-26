@@ -40,37 +40,32 @@ const getRandomPhotos = (photos) => shufflePhotoArray(photos).slice(0, QUANTITY_
 // Функция выбора фото по количеству комментариев.
 const getMostDiscussedPhotos = (photos) => photos.slice().sort(comparePhotoByComments);
 
+// Функция смены активной кнопки.
+const changeActiveButton = (clickedButton) => {
+  imgFilters.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
+  clickedButton.classList.add('img-filters__button--active');
+};
+
+// Применяемые фильтры.
+const FiltersFunctions = {
+  'filter-default': (photos) => photos.slice(),
+  'filter-random': (photos) => getRandomPhotos(photos),
+  'filter-discussed': (photos) => getMostDiscussedPhotos(photos),
+};
+
+const debouncedFilter = debounce((id, photos) => {
+  removePhotoFromPage();
+  renderingThumbnails(FiltersFunctions[id](photos));
+}, RERENDER_DELAY);
+
 // Функция показа блока кнопопок фильтрации фото.
 const showImgFiltersButtons = (photos) => {
   imgFilters.classList.remove('img-filters--inactive');
-  // Функция для активации кнопки.
-  const onFilterButtonClick = (evt) => {
-    imgFilters.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
-    evt.target.classList.add('img-filters__button--active');
-
-    switch(evt.target.id) {
-      case 'filter-default':  // Фильтр "По умолчанию".
-        debounce(() => {
-          removePhotoFromPage();
-          renderingThumbnails(photos);
-        }, RERENDER_DELAY)();
-        break;
-      case 'filter-random':  // Фильтр "Случайные".
-        debounce(() => {
-          removePhotoFromPage();
-          renderingThumbnails(getRandomPhotos(photos));
-        }, RERENDER_DELAY)();
-        break;
-      case 'filter-discussed':  // Фильтр "Обсуждаемые".
-        debounce(() => {
-          removePhotoFromPage();
-          renderingThumbnails(getMostDiscussedPhotos(photos));
-        }, RERENDER_DELAY)();
-        break;
-    }
-  };
   allFiltersButtons.forEach((button) => {
-    button.addEventListener('click', onFilterButtonClick);
+    button.addEventListener('click', (evt) => {
+      changeActiveButton(evt.target);
+      debouncedFilter(evt.target.id, photos);
+    });
   });
 };
 

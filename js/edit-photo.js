@@ -157,8 +157,6 @@ const applyClearEffects = () => {
     effectLevelSlider.noUiSlider.destroy();
   }
   imgUploadPreview.style.filter = '';
-  scaleControlValue.value = `${SCALE_DEFAULT}%`;
-  imgUploadPreview.style.transform = `scale(${SCALE_DEFAULT / 100})`;
 };
 
 // Задаем значение по умолчанию.
