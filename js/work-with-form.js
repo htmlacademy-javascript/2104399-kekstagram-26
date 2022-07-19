@@ -2,6 +2,7 @@ import {body} from './show-photo.js';
 import {sendData} from './api.js';
 import {showSuccessMessage} from './success-message.js';
 import {showErrorMessage} from './error-message.js';
+import {isEscapeKeydown} from './utils.js';
 
 // Максимальное количество хэш-тегов.
 const MAX_LENGTH_HASHTAGS = 5;
@@ -58,7 +59,7 @@ upLoadCancel.addEventListener('click', () => {
 
 // Закрытие по Escape.
 function onModalEscKeyDown(evt) {
-  if (evt.key === 'Escape' && !imgUploadOverlay.classList.contains('hidden')) {
+  if (isEscapeKeydown(evt) && !imgUploadOverlay.classList.contains('hidden')) {
     closeEditForm();
   }
 }
@@ -66,14 +67,9 @@ function onModalEscKeyDown(evt) {
 // Закрытие формы по Escape.
 document.addEventListener('keydown', onModalEscKeyDown);
 
-// Открытие формы редактирования изображения.
-const showEditForm = () => {
-
-};
-
 // stopPropagation.
 const onFocusInputEscKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
+  if (isEscapeKeydown(evt)) {
     evt.stopPropagation();
   }
 };
@@ -150,4 +146,4 @@ const setUserFormSubmit = () => {
   });
 };
 
-export {showEditForm, uploadFile, setUserFormSubmit, closeEditForm, imgUploadOverlay};
+export {uploadFile, setUserFormSubmit, closeEditForm, imgUploadOverlay};

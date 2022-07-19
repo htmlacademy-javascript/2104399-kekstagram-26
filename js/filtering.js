@@ -26,12 +26,12 @@ const comparePhotoByComments = (firstPhoto, secondPhoto) => secondPhoto.comments
 // Функция перемешивания массива фото.
 const shufflePhotoArray = (photos) => {
   const photosSlice = photos.slice();  // Срез с массива.
-  const newPhotosArray = [];  // Хранилище для фото.
-  while (newPhotosArray.length <= QUANTITY_RANDOM_PHOTO) {
+  const newPhotos = [];  // Хранилище для фото.
+  while (newPhotos.length <= QUANTITY_RANDOM_PHOTO) {
     const tempPhoto = photosSlice.splice(getRandomPositiveInteger(0, photosSlice.length - 1), 1);  // Временная переменная для 1 фото.
-    newPhotosArray.push(tempPhoto[0]);
+    newPhotos.push(tempPhoto[0]);
   }
-  return newPhotosArray;
+  return newPhotos;
 };
 
 // Функция выбора 10 случайных фото из массива.

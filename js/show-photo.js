@@ -1,3 +1,5 @@
+import {isEscapeKeydown} from './utils.js';
+
 // Селектор по body.
 const body = document.querySelector('body');
 
@@ -44,15 +46,13 @@ const MAX_COUNT_DISPLAY_COMMENTS = 5;
 const closeBigPhoto = () => {
   bigPhoto.classList.add('hidden');
   body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onBigPhotoClose(null)); // Сообщение об ошибке, если нет эвента по нажатию.
+  document.removeEventListener('keydown', onBigPhotoClose); // Сообщение об ошибке, если нет эвента по нажатию.
 };
 
 // Снятие обработчика.
 function onBigPhotoClose (evt) {
-  if (evt !== null) {
-    if (evt.key === 'Escape') {
-      document.removeEventListener('keydown', closeBigPhoto());
-    }
+  if (isEscapeKeydown(evt)) {
+    closeBigPhoto();
   }
 }
 

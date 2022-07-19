@@ -1,5 +1,7 @@
 import {uploadFile} from './work-with-form.js';
 
+const EFFECT_NONE = 'none';
+
 // Минимальное значение масштаба.
 const MIN_SCALE_VALUE = 25;
 
@@ -218,7 +220,7 @@ const applyEffect = ({effect, sliderSettings, filterName, measuringUnit}) => {
 
 // Делегирование.
 effectsList.addEventListener('change', (evt) => {
-  if (evt.target.value === 'none') {
+  if (evt.target.value === EFFECT_NONE) {
     applyEffectNone();
   }
   else {

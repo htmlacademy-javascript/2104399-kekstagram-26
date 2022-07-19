@@ -1,5 +1,6 @@
 import {imgUploadOverlay} from './work-with-form.js';
 import {body} from './show-photo.js';
+import {isEscapeKeydown} from './utils.js';
 
 // Время показа сообщения об ошибке.
 const ALERT_SHOW_TIME = 10000;
@@ -50,7 +51,7 @@ const showErrorMessage = () => {
   });
 
   function onMessageEscapeKeydown (evt) {
-    if (evt.key === 'Escape') {
+    if (isEscapeKeydown(evt)) {
       hideEditForm();
     }
   }
