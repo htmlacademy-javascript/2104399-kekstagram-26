@@ -3,6 +3,7 @@ import {sendData} from './api.js';
 import {showSuccessMessage} from './success-message.js';
 import {showErrorMessage} from './error-message.js';
 import {isEscapeKeydown} from './utils.js';
+import {addListeners, removeListeners, onResetEffects} from './edit-photo.js';
 
 // Максимальное количество хэш-тегов.
 const MAX_LENGTH_HASHTAGS = 5;
@@ -42,6 +43,8 @@ uploadFile.addEventListener('change', () => {
   imgUploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
   document.addEventListener('keydown', onModalEscKeyDown);
+  addListeners();
+  onResetEffects();
 });
 
 // Закрытие формы редактирования изображения.
@@ -50,6 +53,7 @@ const closeEditForm = () => {
   body.classList.remove('modal-open');
   imgUploadForm.reset();
   document.removeEventListener('keydown', onModalEscKeyDown);
+  removeListeners();
 };
 
 // Закрытие формы по клику.
@@ -146,4 +150,4 @@ const setUserFormSubmit = () => {
   });
 };
 
-export {uploadFile, setUserFormSubmit, closeEditForm, imgUploadOverlay};
+export {setUserFormSubmit, closeEditForm, imgUploadOverlay};

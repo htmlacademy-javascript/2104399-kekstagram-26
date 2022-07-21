@@ -5,60 +5,46 @@ import {isEscapeKeydown} from './utils.js';
 // Время показа сообщения об ошибке.
 const ALERT_SHOW_TIME = 10000;
 
-// Функция скрытия окна редактирования изображения.
-const hideEditForm = () => {
+const ERROR_CLASS = 'error';
+
+// Шаблон сообщения об ошибке загрузки файла.
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
+
+// Клонируем шаблон сообщения об ошибке загрузки.
+const errorPopup = errorTemplate.cloneNode(true);
+
+// Кнопка ошибки загрузки.
+const errorButton = errorPopup.querySelector('.error__button');
+
+body.appendChild(errorPopup);
+errorPopup.classList.add('hidden');
+
+const onCloseError = () => {
+  errorPopup.classList.add('hidden');
   imgUploadOverlay.classList.remove('hidden');
-  body.classList.add('modal-open');
+  document.removeEventListener('keydown', onEscCloseError);
 };
 
-// Функция открытия окна редактирования изображения.
-const unHideEditForm = () => {
-  imgUploadOverlay.classList.remove('hidden');
-  body.classList.add('modal-open');
+const onOuterClickCloseError= (evt) => {
+  if(evt.target.classList.contains(ERROR_CLASS)) {
+    onCloseError();
+  }
 };
 
 // Показ сообщения об ошибке загрузки.
 const showErrorMessage = () => {
-  // Шаблон сообщения об ошибке загрузки файла.
-  const errorTemplate = document.querySelector('#error').content.querySelector('.error');
-
-  // Клонируем шаблон сообщения об ошибке загрузки.
-  const errorPopup = errorTemplate.cloneNode(true);
-
-  // Функия закрытия окна сообщения.
-  const closeMessageModal = () => {
-    errorPopup.remove();
-    document.removeEventListener('keydown', onMessageEscapeKeydown);
-  };
-
-  // Добавляем в конец body.
-  body.append(errorPopup);
-
-  // Листенеры.
-  // Обработчик для клика вне окна сообщения.
-  errorPopup.addEventListener('click', (evt) => {
-    if(evt.target.classList.contains('error')) {
-      closeMessageModal();
-      unHideEditForm();
-    }
-  });
-
-  // Кнопка ошибки загрузки.
-  const errorButton = errorPopup.querySelector('.error__button');
-  errorButton.addEventListener('click', () => {
-    errorPopup.remove();
-    hideEditForm();
-  });
-
-  function onMessageEscapeKeydown (evt) {
-    if (isEscapeKeydown(evt)) {
-      hideEditForm();
-    }
-  }
-
-  // По Escape.
-  document.addEventListener('keydown', onMessageEscapeKeydown);
+  imgUploadOverlay.classList.add('hidden');
+  errorPopup.classList.remove('hidden');
+  errorButton.addEventListener('click', onCloseError);
+  document.addEventListener('keydown', onEscCloseError);
+  errorPopup.addEventListener('click', onOuterClickCloseError);
 };
+
+function onEscCloseError (evt) {
+  if(isEscapeKeydown(evt)) {
+    onCloseError();
+  }
+}
 
 // Функция показа сообщения об ошибке загрузки данных с сервера.
 const showMessageDownloadError = (message) => {
