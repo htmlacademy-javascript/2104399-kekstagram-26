@@ -42,17 +42,24 @@ const commentsLoader = bigPhoto.querySelector('.comments-loader');
 // Количество показываемых комментариев.
 const MAX_COUNT_DISPLAY_COMMENTS = 5;
 
+const removeListeners = () => {
+  commentsLoader.onclick = null;
+  photoClose.onclick = null;
+};
+
 // Функция закрытия модального окна с большим фото.
 const closeBigPhoto = () => {
   bigPhoto.classList.add('hidden');
   body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onBigPhotoClose); // Сообщение об ошибке, если нет эвента по нажатию.
+  document.removeEventListener('keydown', onBigPhotoClose);
+  removeListeners();
 };
 
 // Снятие обработчика.
 function onBigPhotoClose (evt) {
   if (isEscapeKeydown(evt)) {
     closeBigPhoto();
+    removeListeners();
   }
 }
 
@@ -116,14 +123,14 @@ const showBigPhoto = (photo) => {
 
   addCommentsToList();
 
-  // Листенер на кнопку добавления комментариев.
-  commentsLoader.addEventListener('click', () => {
+  // Не получилось корректно снять листенер.
+  commentsLoader.onclick = () => {
     countClickAddComments++;
     if (countClickAddComments === commentsPartsCount - 1) {
       commentLoader.classList.add('hidden');
     }
     addCommentsToList();
-  });
+  };
 
   // Добавлем описание фото.
   bigPhotoDescription.textContent = photo.description;
@@ -135,9 +142,9 @@ const showBigPhoto = (photo) => {
   document.addEventListener('keydown', onBigPhotoClose);
 
   // Закрытие фото по клику.
-  photoClose.addEventListener('click', () => {
+  photoClose.onclick = () => {
     closeBigPhoto();
-  });
+  };
 };
 
 export{showBigPhoto, body};

@@ -38,6 +38,23 @@ const imgUploadForm = document.querySelector('.img-upload__form');
 // Кнопка отправки формы.
 const submitButton = imgUploadForm.querySelector('.img-upload__submit');
 
+// stopPropagation.
+const onFocusInputEscKeyDown = (evt) => {
+  if (isEscapeKeydown(evt)) {
+    evt.stopPropagation();
+  }
+};
+
+const addListenersForValidation = () => {
+  textHashtags.addEventListener('keydown', onFocusInputEscKeyDown);
+  textDescription.addEventListener('keydown', onFocusInputEscKeyDown);
+};
+
+const removeListenersForValidation = () => {
+  textHashtags.removeEventListener('keydown', onFocusInputEscKeyDown);
+  textDescription.removeEventListener('keydown', onFocusInputEscKeyDown);
+};
+
 // Листенер на изменение контрола загрузки файла.
 uploadFile.addEventListener('change', () => {
   imgUploadOverlay.classList.remove('hidden');
@@ -45,21 +62,22 @@ uploadFile.addEventListener('change', () => {
   document.addEventListener('keydown', onModalEscKeyDown);
   addListeners();
   onResetEffects();
+  addListenersForValidation();
+  upLoadCancel.onclick = () => {
+    closeEditForm();
+  };
 });
 
 // Закрытие формы редактирования изображения.
-const closeEditForm = () => {
+function closeEditForm () {
   imgUploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
   imgUploadForm.reset();
   document.removeEventListener('keydown', onModalEscKeyDown);
   removeListeners();
-};
-
-// Закрытие формы по клику.
-upLoadCancel.addEventListener('click', () => {
-  closeEditForm();
-});
+  removeListenersForValidation();
+  upLoadCancel.onclick = null;
+}
 
 // Закрытие по Escape.
 function onModalEscKeyDown(evt) {
@@ -70,17 +88,6 @@ function onModalEscKeyDown(evt) {
 
 // Закрытие формы по Escape.
 document.addEventListener('keydown', onModalEscKeyDown);
-
-// stopPropagation.
-const onFocusInputEscKeyDown = (evt) => {
-  if (isEscapeKeydown(evt)) {
-    evt.stopPropagation();
-  }
-};
-
-// Листенеры на Escape при открытой форме.
-textHashtags.addEventListener('keydown', onFocusInputEscKeyDown);
-textDescription.addEventListener('keydown', onFocusInputEscKeyDown);
 
 // Функция проверки хэш-тегов.
 const validateHashtags = (value) => {
