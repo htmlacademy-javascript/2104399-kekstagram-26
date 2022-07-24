@@ -2,6 +2,8 @@ import {body} from './show-photo.js';
 import {sendData} from './api.js';
 import {showSuccessMessage} from './success-message.js';
 import {showErrorMessage} from './error-message.js';
+import {isEscapeKeydown} from './utils.js';
+import {addListeners, removeListeners, onResetEffects} from './edit-photo.js';
 
 // Максимальное количество хэш-тегов.
 const MAX_LENGTH_HASHTAGS = 5;
@@ -36,51 +38,56 @@ const imgUploadForm = document.querySelector('.img-upload__form');
 // Кнопка отправки формы.
 const submitButton = imgUploadForm.querySelector('.img-upload__submit');
 
+// stopPropagation.
+const onFocusInputEscKeyDown = (evt) => {
+  if (isEscapeKeydown(evt)) {
+    evt.stopPropagation();
+  }
+};
+
+const addListenersForValidation = () => {
+  textHashtags.addEventListener('keydown', onFocusInputEscKeyDown);
+  textDescription.addEventListener('keydown', onFocusInputEscKeyDown);
+};
+
+const removeListenersForValidation = () => {
+  textHashtags.removeEventListener('keydown', onFocusInputEscKeyDown);
+  textDescription.removeEventListener('keydown', onFocusInputEscKeyDown);
+};
+
 // Листенер на изменение контрола загрузки файла.
 uploadFile.addEventListener('change', () => {
   imgUploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
   document.addEventListener('keydown', onModalEscKeyDown);
+  addListeners();
+  onResetEffects();
+  addListenersForValidation();
+  upLoadCancel.onclick = () => {
+    closeEditForm();
+  };
 });
 
 // Закрытие формы редактирования изображения.
-const closeEditForm = () => {
+function closeEditForm () {
   imgUploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
   imgUploadForm.reset();
   document.removeEventListener('keydown', onModalEscKeyDown);
-};
-
-// Закрытие формы по клику.
-upLoadCancel.addEventListener('click', () => {
-  closeEditForm();
-});
+  removeListeners();
+  removeListenersForValidation();
+  upLoadCancel.onclick = null;
+}
 
 // Закрытие по Escape.
 function onModalEscKeyDown(evt) {
-  if (evt.key === 'Escape' && !imgUploadOverlay.classList.contains('hidden')) {
+  if (isEscapeKeydown(evt) && !imgUploadOverlay.classList.contains('hidden')) {
     closeEditForm();
   }
 }
 
 // Закрытие формы по Escape.
 document.addEventListener('keydown', onModalEscKeyDown);
-
-// Открытие формы редактирования изображения.
-const showEditForm = () => {
-
-};
-
-// stopPropagation.
-const onFocusInputEscKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
-    evt.stopPropagation();
-  }
-};
-
-// Листенеры на Escape при открытой форме.
-textHashtags.addEventListener('keydown', onFocusInputEscKeyDown);
-textDescription.addEventListener('keydown', onFocusInputEscKeyDown);
 
 // Функция проверки хэш-тегов.
 const validateHashtags = (value) => {
@@ -150,4 +157,4 @@ const setUserFormSubmit = () => {
   });
 };
 
-export {showEditForm, uploadFile, setUserFormSubmit, closeEditForm, imgUploadOverlay};
+export {setUserFormSubmit, closeEditForm, imgUploadOverlay};

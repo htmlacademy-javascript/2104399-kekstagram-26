@@ -1,4 +1,5 @@
 import {body} from './show-photo.js';
+import {isEscapeKeydown} from './utils.js';
 
 // Показ сообщения об успешной отправке.
 const showSuccessMessage = () => {
@@ -32,7 +33,7 @@ const showSuccessMessage = () => {
   });
 
   function onMessageEscapeKeydown (evt) {
-    if (evt.key === 'Escape') {
+    if (isEscapeKeydown(evt)) {
       closeMessageModal();
     }
   }

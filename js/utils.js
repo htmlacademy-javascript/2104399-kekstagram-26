@@ -1,3 +1,5 @@
+const ESCAPE_KEYDOWN = 'Escape';
+
 // Функция, возвращающая случайное целое число из переданного диапазона включительно.
 const getRandomPositiveInteger = (a, b) => {
   const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
@@ -14,4 +16,7 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-export {getRandomPositiveInteger, debounce};
+// Функция проверки нажатия Escape.
+const isEscapeKeydown = (evt) => evt.key === ESCAPE_KEYDOWN;
+
+export {getRandomPositiveInteger, debounce, isEscapeKeydown};
