@@ -1,4 +1,4 @@
-import {uploadFile} from './work-with-form.js';
+const EFFECT_NONE = 'none';
 
 // Минимальное значение масштаба.
 const MIN_SCALE_VALUE = 25;
@@ -11,6 +11,29 @@ const STEP_SCALE_VALUE = 25;
 
 // Значение масштаба по умолчанию для окна.
 const SCALE_DEFAULT = 100;
+
+// Кнопка уменьшения масштаба.
+const scaleControlSmaller = document.querySelector('.scale__control--smaller');
+
+// Кнопка увеличения масштаба.
+const scaleControlBigger = document.querySelector('.scale__control--bigger');
+
+// Значение масштаба.
+const scaleControlValue = document.querySelector('.scale__control--value');
+
+// Превью фото.
+const imgUploadPreview = document.querySelector('.img-upload__preview img');
+
+// Список кнопок эффектов для делегирования.
+const effectsList = document.querySelector('.effects__list');
+
+const effectLevel = document.querySelector('.effect-level');
+
+// Поле для записи уровня эффекта.
+const effectLevelValue = effectLevel.querySelector('.effect-level__value');
+
+// Слайдер.
+const effectLevelSlider = document.querySelector('.effect-level__slider');
 
 // Настройки слайдера.
 const settings = {
@@ -121,53 +144,28 @@ const settings = {
   },
 };
 
-// Кнопка уменьшения масштаба.
-const scaleControlSmaller = document.querySelector('.scale__control--smaller');
-
-// Кнопка увеличения масштаба.
-const scaleControlBigger = document.querySelector('.scale__control--bigger');
-
-// Значение масштаба.
-const scaleControlValue = document.querySelector('.scale__control--value');
-
-// Превью фото.
-const imgUploadPreview = document.querySelector('.img-upload__preview img');
-
-// Список кнопок эффектов для делегирования.
-const effectsList = document.querySelector('.effects__list');
-
-// Поле для записи уровня эффекта.
-const effectLevelValue = document.querySelector('.effect-level__value');
-
-// Контейнер для слайдера.
-const sliderEffect = document.querySelector('.img-upload__effect-level');
-
-// Слайдер.
-const effectLevelSlider = document.querySelector('.effect-level__slider');
-
-// Сразу скрываем контейнер для слайдера.
-sliderEffect.classList.add('hidden');
-
-// Удаление эффектов.
-const applyClearEffects = () => {
-  sliderEffect.classList.add('hidden');
-  effectLevelValue.value = '';
-  imgUploadPreview.className = 'img-upload__preview'; // Нужно для того, чтобы фото на запоминало эффект предыдущей загрузки.
-  if (effectLevelSlider.noUiSlider) {
-    effectLevelSlider.noUiSlider.destroy();
-  }
+// Добавление эффектов.
+// Нет эффекта.
+const applyEffectNone = () => {
+  imgUploadPreview.classList = '';
+  imgUploadPreview.classList.add('effects__preview--none');
   imgUploadPreview.style.filter = '';
+  effectLevelValue.value = '';
+  effectLevelSlider.setAttribute('disabled', true);
+  effectLevel.classList.add('hidden');
 };
 
-// Задаем значение по умолчанию.
-uploadFile.addEventListener('click', () => {
-  scaleControlValue.value = `${SCALE_DEFAULT}%`;
-  imgUploadPreview.style.transform = `scale(${SCALE_DEFAULT / 100})`;
-  applyClearEffects();
-});
+// Функция применения эффектов.
+const applyEffect = ({effect, sliderSettings}) => {
+  effectLevelSlider.removeAttribute('disabled');
+  effectLevel.classList.remove('hidden');
+  imgUploadPreview.classList = '';
+  imgUploadPreview.classList.add(`effect__preview--${effect}`);
+  effectLevelSlider.noUiSlider.updateOptions(sliderSettings);
+};
 
 // Функция уменьшения масштаба.
-const smallerScalePreview = () => {
+const onSmallerScalePreview = () => {
   // Значение масштаба для расчета.
   let scaleForCalculate = parseInt(scaleControlValue.value, 10);
   if (scaleForCalculate > MIN_SCALE_VALUE) {
@@ -178,11 +176,8 @@ const smallerScalePreview = () => {
   }
 };
 
-// Листенер на кнопку уменьшения масштаба.
-scaleControlSmaller.addEventListener('click', smallerScalePreview);
-
 // Функция увеличения масштаба.
-const biggerScalePreview = () => {
+const onBiggerScalePreview = () => {
   // Значение масштаба для расчета.
   let scaleForCalculate = parseInt(scaleControlValue.value, 10);
   if (scaleForCalculate < MAX_SCALE_VALUE) {
@@ -193,35 +188,49 @@ const biggerScalePreview = () => {
   }
 };
 
-// Листенер на кнопку увеличения масштаба.
-scaleControlBigger.addEventListener('click', biggerScalePreview);
-
-// Добавление эффектов.
-// Нет эффекта.
-const applyEffectNone = () => {
-  applyClearEffects();
-  imgUploadPreview.classList.add('effects__preview--none');
-  sliderEffect.classList.add('hidden');
-};
-
-// Функция применения эффектов.
-const applyEffect = ({effect, sliderSettings, filterName, measuringUnit}) => {
-  applyClearEffects();
-  imgUploadPreview.classList.add(`effects__preview--${effect}`);
-  sliderEffect.classList.remove('hidden');
-  noUiSlider.create(effectLevelSlider, sliderSettings);
-  effectLevelSlider.noUiSlider.on('update', () => {
-    effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-    imgUploadPreview.style.filter = `${filterName}(${effectLevelValue.value}${measuringUnit})`;
-  });
-};
-
-// Делегирование.
-effectsList.addEventListener('change', (evt) => {
-  if (evt.target.value === 'none') {
+const onEffectChange = (evt) => {
+  if (evt.target.value === EFFECT_NONE) {
     applyEffectNone();
-  }
-  else {
+  } else {
     applyEffect(settings[evt.target.value]);
   }
+};
+
+noUiSlider.create(effectLevelSlider, {
+  range: {
+    min: 0,
+    max: 1,
+  },
+  start: 1,
+  step: 0.1,
+  connect: 'lower',
 });
+
+effectLevelSlider.noUiSlider.on('update', () => {
+  const effectValue = document.querySelector('input[name="effect"]:checked');
+  if (effectValue && effectValue.value !== EFFECT_NONE) {
+    const {filterName, measuringUnit} = settings[effectValue.value] ;
+    effectLevelValue.value = effectLevelSlider.noUiSlider.get();
+    imgUploadPreview.style.filter = `${filterName}(${effectLevelSlider.noUiSlider.get()}${measuringUnit})`;
+  }
+});
+
+const onResetEffects = () => {
+  scaleControlValue.value = `${SCALE_DEFAULT}%`;
+  imgUploadPreview.style.transform = `scale(${SCALE_DEFAULT / 100})`;
+  applyEffectNone();
+};
+
+const addListeners = () => {
+  scaleControlSmaller.addEventListener('click', onSmallerScalePreview);
+  scaleControlBigger.addEventListener('click', onBiggerScalePreview);
+  effectsList.addEventListener('change', onEffectChange);
+};
+
+const removeListeners = () => {
+  scaleControlSmaller.removeEventListener('click', onSmallerScalePreview);
+  scaleControlBigger.removeEventListener('click', onBiggerScalePreview);
+  effectsList.removeEventListener('change', onEffectChange);
+};
+
+export {addListeners, removeListeners, onResetEffects};
