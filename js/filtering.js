@@ -1,6 +1,6 @@
 import {getRandomPositiveInteger} from './utils.js';
 import {debounce} from './utils.js';
-import {renderingThumbnails} from './render-template.js';
+import {renderThumbnails} from './render-template.js';
 
 // Количество случайных фото.
 const QUANTITY_RANDOM_PHOTO = 10;
@@ -55,7 +55,7 @@ const FiltersFunctions = {
 
 const debouncedFilter = debounce((id, photos) => {
   removePhotoFromPage();
-  renderingThumbnails(FiltersFunctions[id](photos));
+  renderThumbnails(FiltersFunctions[id](photos));
 }, RERENDER_DELAY);
 
 // Функция показа блока кнопопок фильтрации фото.
