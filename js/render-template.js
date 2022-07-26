@@ -1,6 +1,6 @@
 import {showBigPhoto} from './show-photo.js';
 
-const renderingThumbnails = (photos) => {
+const renderThumbnails = (photos) => {
   // Находим контейнер для изображений, куда будем помещать фото.
   const similarPhotoElement = document.querySelector('.pictures');
 
@@ -26,4 +26,4 @@ const renderingThumbnails = (photos) => {
   similarPhotoElement.appendChild(similarPhotoFragment);
 };
 
-export {renderingThumbnails};
+export {renderThumbnails};
